@@ -1,5 +1,5 @@
 #define POMODOJO_EXPORTS
-#include "Test.h"
+#include "PomoDojo_API.h"
 #include <atomic>
 #include <chrono>
 #include <thread>
