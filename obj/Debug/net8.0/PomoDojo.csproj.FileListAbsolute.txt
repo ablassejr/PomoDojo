@@ -1,0 +1,15 @@
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/PomoDojo.GeneratedMSBuildEditorConfig.editorconfig
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/PomoDojo.AssemblyInfoInputs.cache
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/PomoDojo.AssemblyInfo.cs
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/PomoDojo.csproj.CoreCompileInputs.cache
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/PomoDojo.sourcelink.json
+/home/draogo/Work/PomoDojo/bin/Debug/net8.0/PomoDojo
+/home/draogo/Work/PomoDojo/bin/Debug/net8.0/PomoDojo.deps.json
+/home/draogo/Work/PomoDojo/bin/Debug/net8.0/PomoDojo.runtimeconfig.json
+/home/draogo/Work/PomoDojo/bin/Debug/net8.0/PomoDojo.dll
+/home/draogo/Work/PomoDojo/bin/Debug/net8.0/PomoDojo.pdb
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/PomoDojo.dll
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/refint/PomoDojo.dll
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/PomoDojo.pdb
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/PomoDojo.genruntimeconfig.cache
+/home/draogo/Work/PomoDojo/obj/Debug/net8.0/ref/PomoDojo.dll
