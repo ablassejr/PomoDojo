@@ -96,7 +96,6 @@ extern "C" {
 #endif
 
 POMODOJO_API void* SM_Create();
-POMODOJO_API void SM_Destroy(void* manager);
 POMODOJO_API void SM_StartFocus(void* manager);
 POMODOJO_API void SM_StartShortBreak(void* manager);
 POMODOJO_API void SM_StartLongBreak(void* manager);

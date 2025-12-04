@@ -5,15 +5,15 @@
 #include <thread>
 using namespace std;
 
-static atomic<bool> running;    // bool to signal if the app is running
-static atomic<bool> workPeriod; // bool to signal a work period or break period
+static atomic<bool> running;    // flag indicating whether the app is running
+static atomic<bool> workPeriod; // flag indicating whether it's a work period or break period
 static atomic<int>
-    remainingSeconds; // integer for the remaining seconds in the session
+    remainingSeconds;
 
 static thread timerThread;
 
-void TimerLoop(int workMin, int breakMin) // function to create the timer loop
-                                          // for work and break session
+
+void TimerLoop(int workMin, int breakMin)
 {
   while (running) {
     // Work Session
@@ -27,7 +27,7 @@ void TimerLoop(int workMin, int breakMin) // function to create the timer loop
       remainingSeconds--;
     }
 
-    if (!running) //
+    if (!running)
       break;
 
     // Break Session
@@ -45,17 +45,17 @@ void TimerLoop(int workMin, int breakMin) // function to create the timer loop
 
 extern "C" POMODOJO_API void
 StartInterval(int workMinutes,
-              int breakMinutes) // function to start PomoDojo session
+              int breakMinutes) // function to start pomodoro interval
 {
   if (running)
     return;
 
   running = true;
   timerThread =
-      thread(TimerLoop, workMinutes, breakMinutes); // create the timer thread
+      thread(TimerLoop, workMinutes, breakMinutes); // async thread for timer
 }
 
-extern "C" POMODOJO_API void StopInterval() // function to stop PomoDojo session
+extern "C" POMODOJO_API void StopInterval() // function to stop pomodoro interval
 {
   running = false;
   if (timerThread.joinable())
@@ -63,14 +63,13 @@ extern "C" POMODOJO_API void StopInterval() // function to stop PomoDojo session
 }
 
 extern "C" POMODOJO_API int
-GetRemainingSeconds() // function that returns the remaining seconds in the
-                      // session
+GetRemainingSeconds()
 {
   return remainingSeconds;
 }
 
 extern "C" POMODOJO_API int
-IsWorkPeriod() // function to return if work session or not
+IsWorkPeriod()
 {
   return workPeriod;
 }

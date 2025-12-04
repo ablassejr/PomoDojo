@@ -1,14 +1,36 @@
+using System.Text.Json;
+
 public class Profile
 {
     public string Username { get; set; } = "";
     public UserSettings Settings { get; set; }
     public int TotalPomodorosCompleted { get; set; } = 0;
 
+    public Profile()
+    {
+        Settings = new UserSettings();
+    }
+
     public Profile(string username)
     {
         Username = username;
         Settings = new UserSettings();
         TotalPomodorosCompleted = 0;
+    }
+
+    public static void SaveAllProfiles()
+    {
+        try
+        {
+            var list = Program.storedProfiles?.ToList() ?? new List<Profile>();
+            string json = JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true });
+            Directory.CreateDirectory("./data");
+            File.WriteAllText("./data/profiles.json", json);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving profiles: {ex.Message}");
+        }
     }
 
     public static Profile SetupProfile()
@@ -42,6 +64,12 @@ public class Profile
             AutoStartNext = autoStart
         };
 
+        // Save the new profile
+        var list = Program.storedProfiles?.ToList() ?? new List<Profile>();
+        list.Add(profile);
+        Program.storedProfiles = list.ToArray();
+        SaveAllProfiles();
+
         return profile;
     }
 
@@ -59,21 +87,26 @@ public class Profile
             if (input == "y")
             {
                 Profile newProfile = SetupProfile();
-                Program.storedProfiles.Append(newProfile);
+                // SetupProfile now handles saving internally
                 manager.ActiveSession.currentProfile = newProfile;
             }
-            else if (input == "n")
+            else
             {
                 Console.WriteLine("Please Try Again.");
             }
-
         }
     }
 
     public static void SaveProfileSettings(Profile profile, UserSettings settings)
     {
-        Profile profileToSave = Program.storedProfiles.FirstOrDefault(p => p.Username == profile.Username);
-        profileToSave!.Settings = settings;
+        if (profile == null || Program.storedProfiles == null) return;
+
+        Profile? profileToSave = Program.storedProfiles.FirstOrDefault(p => p.Username == profile.Username);
+        if (profileToSave != null)
+        {
+            profileToSave.Settings = settings;
+            SaveAllProfiles();
+        }
     }
     public void IncrementPomodoros()
     {

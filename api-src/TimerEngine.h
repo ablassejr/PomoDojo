@@ -24,8 +24,7 @@ struct Session;
 // Callback type for tick notifications (called each second when running)
 using TickCallback = void (*)(void *userData);
 
-/// TimerEngine - Autonomous timer that runs a background thread
-/// Mirrors the C# TimerEngine async pattern with native threading
+// TimerEngine - Autonomous timer that runs a background thread
 class TimerEngine {
 public:
   TimerEngine();
@@ -35,24 +34,19 @@ public:
   TimerEngine(const TimerEngine &) = delete;
   TimerEngine &operator=(const TimerEngine &) = delete;
 
-  /// Set the session to be ticked by this timer
-  /// @param session Pointer to Session struct (must remain valid while timer
-  /// runs)
+  // Set the session to be ticked by this timer
   void SetSession(Session *session);
 
-  /// Start the timer loop (runs in background thread)
+  // Start the timer loop (runs in background thread)
   void Start();
 
-  /// Stop the timer loop and wait for thread to finish
+  // Stop the timer loop and wait for thread to finish
   void Stop();
 
-  /// Check if timer is currently running
+  // Check if timer is currently running
   bool IsRunning() const;
 
-  /// Set a callback to be invoked on each tick (optional)
-  /// @param callback Function pointer called each second
-  /// @param userData User data passed to callback
-  void SetTickCallback(TickCallback callback, void *userData);
+
 
 private:
   void RunTimerLoop();
@@ -71,15 +65,13 @@ private:
 extern "C" {
 #endif
 
-// C API for P/Invoke from C#
+// C API for TimerEngine
 POMODOJO_API void *TE_Create();
-POMODOJO_API void TE_Destroy(void *engine);
 POMODOJO_API void TE_SetSession(void *engine, void *session);
 POMODOJO_API void TE_Start(void *engine);
 POMODOJO_API void TE_Stop(void *engine);
 POMODOJO_API int TE_IsRunning(void *engine);
-POMODOJO_API void TE_SetTickCallback(void *engine, TickCallback callback,
-                                     void *userData);
+
 
 #ifdef __cplusplus
 }

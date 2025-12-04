@@ -1,29 +1,26 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 public class Program
 {
     public static bool setupMode = false;
-    public static Profile[] storedProfiles;
+    public static Profile[] storedProfiles = Array.Empty<Profile>();
+
     public static void Main()
     {
-        if (File.Exists("./data/profiles.json") && File.ReadAllText("./data/profiles.json").Length > 0)
+        // Ensure data directory exists
+        Directory.CreateDirectory("./data");
+
+        if (File.Exists("./data/profiles.json"))
         {
-            var profiles = JsonSerializer.Deserialize<List<Profile>>(File.ReadAllText("./data/profiles.json"));
-            if (profiles != null && profiles.Count() > 0)
+            string content = File.ReadAllText("./data/profiles.json");
+            if (!string.IsNullOrWhiteSpace(content))
             {
-                storedProfiles = profiles.ToArray();
+                var profiles = JsonSerializer.Deserialize<List<Profile>>(content);
+                if (profiles != null && profiles.Count > 0)
+                {
+                    storedProfiles = profiles.ToArray();
+                }
             }
-        }
-        else if (File.Exists("./data/profiles.json"))
-        {
-            Program.setupMode = false;
-            storedProfiles = Array.Empty<Profile>();
-        }
-        else
-        {
-            Program.setupMode = true;
-            Directory.CreateDirectory("data");
-            File.WriteAllText("./data/profiles.json", "");
         }
 
         UIController ui = new();

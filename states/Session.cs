@@ -11,7 +11,7 @@ public class Session
     public SessionType Type { get; private set; }
     public int DurationSeconds { get; private set; }
     public int RemainingSeconds { get; private set; }
-    public Profile currentProfile { get; set; }
+    public Profile? currentProfile { get; set; }
     public bool IsRunning { get; private set; }
     public bool IsPaused { get; private set; }
 
@@ -62,30 +62,4 @@ public class Session
         SessionType.LongBreak => "Long Break",
         _ => "None"
     };
-
-    public string Login(SessionManager manager)
-    {
-        Console.Write("Enter username: ");
-        string username = Console.ReadLine() ?? "User";
-
-        Profile? profile = Program.storedProfiles.FirstOrDefault(p => p.Username == username);
-        if (profile != null)
-        {
-            manager.ActiveSession.currentProfile = profile;
-        }
-        else
-        {
-            Console.WriteLine("Profile not found. Create one? (y/N): ");
-            string input = Console.ReadLine()?.ToLower() ?? "n";
-            if (input == "y")
-            {
-                manager.ActiveSession.currentProfile = Profile.SetupProfile();
-            }
-            else
-            {
-                Console.WriteLine("User not found.");
-            }
-        }
-        return username;
-    }
 }

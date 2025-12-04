@@ -1,4 +1,4 @@
-﻿public class UIController
+public class UIController
 {
     private readonly SessionManager manager = new();
 
@@ -12,28 +12,33 @@
             Console.WriteLine("[1] Select Profile");
             Console.WriteLine("[2] Create New Profile");
             Console.Write("Choose: ");
-            string input = Console.ReadLine()?.Trim();
+            var input = Console.ReadLine()?.Trim();
 
             if (input == "1")
             {
-                string userinput = manager.ActiveSession.Login(manager);
-                Profile.LoadProfile(userinput, manager);
+                Console.Write("Enter username: ");
+                string username = Console.ReadLine()?.Trim().ToLower() ?? "";
+                Profile.LoadProfile(username, manager);
                 if (manager.ActiveSession.currentProfile != null)
                 {
-                    Console.WriteLine("Login Failed. Try Again.");
+                    Console.WriteLine($"Welcome, {manager.ActiveSession.currentProfile.Username}!");
+                    manager.LoadSettingsFromProfile(manager.ActiveSession.currentProfile);
                     break;
                 }
+                Console.WriteLine("Login Failed. Try Again.");
             }
             else if (input == "2")
             {
                 var profile = Profile.SetupProfile();
+                profile.Username = profile.Username.ToLower();
                 if (profile != null)
                 {
                     manager.ActiveSession.currentProfile = profile;
+                    manager.LoadSettingsFromProfile(profile);
                     break;
                 }
             }
-        } while (manager.ActiveSession.currentProfile == null);
+        } while (manager.ActiveSession.currentProfile == null); // Loop until a profile is selected or created
         if (Program.setupMode)
         {
             manager.ActiveSession.currentProfile = Profile.SetupProfile();
@@ -96,8 +101,10 @@
                 break;
             case "4":
                 manager.Pause();
+                Console.WriteLine("________________TIMER PAUSED_________________");
                 break;
             case "5":
+                Console.Clear();
                 manager.Resume();
                 break;
             case "6":
@@ -119,11 +126,14 @@
     {
         var s = manager.Settings;
         Console.WriteLine("\nCurrent Settings:");
-        Console.WriteLine($"Focus Minutes:              {s.FocusMinutes}");
-        Console.WriteLine($"Short Break Minutes:        {s.ShortBreakMinutes}");
-        Console.WriteLine($"Long Break Minutes:         {s.LongBreakMinutes}");
-        Console.WriteLine($"Pomodoros Before Long Break:{s.PomodorosBeforeLongBreak}");
-        Console.WriteLine($"Auto-Start Next:            {(s.AutoStartNext ? "ON" : "OFF")}");
+        Console.WriteLine($"Focus Minutes:               {s.FocusMinutes}");
+        Console.WriteLine($"Short Break Minutes:         {s.ShortBreakMinutes}");
+        Console.WriteLine($"Long Break Minutes:          {s.LongBreakMinutes}");
+        Console.WriteLine($"Pomodoros Before Long Break: {s.PomodorosBeforeLongBreak}");
+        Console.WriteLine($"Auto-Start Next:             {(s.AutoStartNext ? "ON" : "OFF")}");
+        Thread.Sleep(1000);
+        Console.WriteLine("Press any key to continue...");
+        Console.ReadKey();
     }
 
     private void EditSettings()

@@ -1,25 +1,13 @@
 #include "SessionManager.h"
 #include <iostream>
 
-// NotificationService implementation
+
 void NotificationService::NotifySessionEnd(const char* sessionType) {
     std::cout << "Session ended: " << sessionType << std::endl;
 }
 
-// TimerEngine implementation
-void TimerEngine::Start() {
-    // Timer loop handled externally or via threading
-}
 
-void TimerEngine::Stop() {
-    // Stop timer loop
-}
 
-void TimerEngine::SetSession(Session* session) {
-    currentSession = session;
-}
-
-// SessionManager implementation
 SessionManager::SessionManager() {
     timer.Start();
 }
@@ -99,9 +87,7 @@ POMODOJO_API void* SM_Create() {
     return new SessionManager();
 }
 
-POMODOJO_API void SM_Destroy(void* manager) {
-    if (manager) {
-        delete static_cast<SessionManager*>(manager);
+
     }
 }
 
