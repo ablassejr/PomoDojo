@@ -4,19 +4,52 @@
 
     public void Run()
     {
+        Console.Clear();
+        Console.WriteLine("=== POMO DOJO ===");
         bool exit = false;
-
-        while (!exit)
+        do
         {
-            manager.UpdateLogic();
-            DisplaySessionUI();
-            ShowMenu();
-
+            Console.WriteLine("[1] Select Profile");
+            Console.WriteLine("[2] Create New Profile");
+            Console.Write("Choose: ");
             string input = Console.ReadLine()?.Trim();
 
-            if (input == "9") exit = true;
-            else HandleChoice(input);
+            if (input == "1")
+            {
+                string userinput = manager.ActiveSession.Login(manager);
+                Profile.LoadProfile(userinput, manager);
+                if (manager.ActiveSession.currentProfile != null)
+                {
+                    Console.WriteLine("Login Failed. Try Again.");
+                    break;
+                }
+            }
+            else if (input == "2")
+            {
+                var profile = Profile.SetupProfile();
+                if (profile != null)
+                {
+                    manager.ActiveSession.currentProfile = profile;
+                    break;
+                }
+            }
+        } while (manager.ActiveSession.currentProfile == null);
+        if (Program.setupMode)
+        {
+            manager.ActiveSession.currentProfile = Profile.SetupProfile();
         }
+        else
+            while (!exit)
+            {
+                manager.UpdateLogic();
+                DisplaySessionUI();
+                ShowMenu();
+
+                string input = Console.ReadLine()?.Trim();
+
+                if (input == "9") exit = true;
+                else HandleChoice(input);
+            }
     }
 
     private void DisplaySessionUI()
@@ -27,7 +60,6 @@
         int sec = s.RemainingSeconds;
         int m = sec / 60;
         int s2 = sec % 60;
-
         Console.WriteLine("\n======== CURRENT SESSION ========");
         Console.WriteLine($"Type: {s.TypeName()}");
         Console.WriteLine($"Time Left: {(m < 10 ? "0" : "")}{m}:{(s2 < 10 ? "0" : "")}{s2}");
@@ -120,7 +152,7 @@
         string autoInput = Console.ReadLine()?.Trim().ToUpper();
         if (autoInput == "Y") s.AutoStartNext = true;
         else if (autoInput == "N") s.AutoStartNext = false;
-
+        Profile.SaveProfileSettings(manager.ActiveSession.currentProfile, s);
         Console.WriteLine("Settings updated.");
     }
 
