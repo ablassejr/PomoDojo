@@ -6,9 +6,9 @@ public class Program
     public static Profile[] storedProfiles;
     public static void Main()
     {
-        if (File.Exists("./data/profiles.json") && File.ReadAllText("data/profiles.json").Length > 0)
+        if (File.Exists("./data/profiles.json") && File.ReadAllText("./data/profiles.json").Length > 0)
         {
-            var profiles = JsonSerializer.Deserialize<List<Profile>>(File.ReadAllText("data/profiles.json"));
+            var profiles = JsonSerializer.Deserialize<List<Profile>>(File.ReadAllText("./data/profiles.json"));
             if (profiles != null && profiles.Count() > 0)
             {
                 storedProfiles = profiles.ToArray();
@@ -23,7 +23,7 @@ public class Program
         {
             Program.setupMode = true;
             Directory.CreateDirectory("data");
-            File.WriteAllText("data/profiles.json", "");
+            File.WriteAllText("./data/profiles.json", "");
         }
 
         UIController ui = new();

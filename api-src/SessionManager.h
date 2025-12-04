@@ -14,6 +14,8 @@
 #endif
 #endif
 
+#include "TimerEngine.h"
+
 enum class SessionType {
     Focus,
     ShortBreak,
@@ -59,15 +61,6 @@ struct Session {
 class NotificationService {
 public:
     void NotifySessionEnd(const char* sessionType);
-};
-
-class TimerEngine {
-public:
-    void Start();
-    void Stop();
-    void SetSession(Session* session);
-private:
-    Session* currentSession = nullptr;
 };
 
 class SessionManager {
