@@ -8,7 +8,7 @@ public class UIController
     public void Run()
     {
         Console.Clear();
-        Console.WriteLine("=== POMO DOJO ===\n");
+        Console.WriteLine("=== POMODOJO ===\n");
 
         while (currentProfile == null)
         {
@@ -55,34 +55,31 @@ public class UIController
             if (input == "9") exit = true;
             else HandleChoice(input ?? "");
         }
+        manager.Stop();
     }
 
     private void DisplaySessionUI()
     {
-        var s = manager.ActiveSession;
-        if (s == null) return;
+        if (!manager.IsRunning) return;
 
-        int sec = s.RemainingSeconds;
+        int sec = manager.RemainingSeconds;
         int m = sec / 60;
         int s2 = sec % 60;
 
         Console.WriteLine("\n======== CURRENT SESSION ========");
-        Console.WriteLine($"Type: {s.TypeName()}");
+        Console.WriteLine($"Type: {manager.CurrentSessionType}");
         Console.WriteLine($"Time Left: {(m < 10 ? "0" : "")}{m}:{(s2 < 10 ? "0" : "")}{s2}");
+        Console.WriteLine($"Completed Pomodoros: {manager.CompletedPomodoros}");
         Console.WriteLine("==================================");
     }
 
     private void ShowMenu()
     {
-        Console.WriteLine("\n===== POMO DOJO =====");
+        Console.WriteLine("\n===== POMODOJO =====");
         Console.WriteLine("[1] Start Focus");
-        Console.WriteLine("[2] Start Short Break");
-        Console.WriteLine("[3] Start Long Break");
-        Console.WriteLine("[4] Pause");
-        Console.WriteLine("[5] Resume");
-        Console.WriteLine("[6] Stop");
-        Console.WriteLine("[7] Settings (View Only)");
-        Console.WriteLine("[8] Edit Settings");
+        Console.WriteLine("[2] Stop");
+        Console.WriteLine("[3] Settings (View Only)");
+        Console.WriteLine("[4] Edit Settings");
         Console.WriteLine("[9] Exit");
         Console.Write("Choose: ");
     }
@@ -95,24 +92,12 @@ public class UIController
                 manager.StartFocus();
                 break;
             case "2":
-                manager.StartShortBreak();
-                break;
-            case "3":
-                manager.StartLongBreak();
-                break;
-            case "4":
-                manager.Pause();
-                break;
-            case "5":
-                manager.Resume();
-                break;
-            case "6":
                 manager.Stop();
                 break;
-            case "7":
+            case "3":
                 ShowSettings();
                 break;
-            case "8":
+            case "4":
                 EditSettings();
                 break;
             default:

@@ -1,22 +1,26 @@
 using System;
-
+using PomoDojo.Interop;
+//class to manage session state and notify events
 public class SessionManager
 {
     private UserSettings settings = new();
     private readonly NotificationService notifier = new();
-    private readonly TimerEngine timer = new();
 
-    private Session? activeSession;
     private Profile? currentProfile;
     private int completedPomodoros = 0;
+    private bool isRunning = false;
+    private bool wasWorkPeriod = true;
+    private int lastRemainingSeconds = -1;
 
-    public SessionManager()
-    {
-        timer.Start();
-    }
 
-    public Session? ActiveSession => activeSession;
     public UserSettings Settings => settings;
+    public bool IsRunning => isRunning;
+
+    // expose timer state
+    public int RemainingSeconds => isRunning ? NativeApi.GetRemainingSeconds() : 0;
+    public bool IsWorkPeriod => isRunning ? NativeApi.IsWorkPeriod() : true;
+
+    public string CurrentSessionType => IsWorkPeriod ? "Focus" : "Short Break";
 
     public void SetCurrentProfile(Profile profile)
     {
@@ -36,35 +40,36 @@ public class SessionManager
         };
     }
 
-    private void StartSession(SessionType type, int minutes)
+    public void StartFocus()
     {
-        activeSession = new Session(type, minutes);
-        timer.SetSession(activeSession);
-        activeSession.Start();
+        if (isRunning) return;
+
+        NativeApi.StartPomodojo(settings.FocusMinutes, settings.ShortBreakMinutes);
+        isRunning = true;
+        wasWorkPeriod = true;
+        lastRemainingSeconds = settings.FocusMinutes * 60;
     }
 
-    public void StartFocus() =>
-        StartSession(SessionType.Focus, settings.FocusMinutes);
+    public void Stop()
+    {
+        if (!isRunning) return;
 
-    public void StartShortBreak() =>
-        StartSession(SessionType.ShortBreak, settings.ShortBreakMinutes);
-
-    public void StartLongBreak() =>
-        StartSession(SessionType.LongBreak, settings.LongBreakMinutes);
-
-    public void Pause() => activeSession?.Pause();
-    public void Resume() => activeSession?.Resume();
-    public void Stop() => activeSession?.Stop();
-
+        NativeApi.StopPomodojo();
+        isRunning = false;
+    }
+    //function to transition between work and break periods
     public void UpdateLogic()
     {
-        if (activeSession == null) return;
-        if (!activeSession.IsFinished()) return;
+        if (!isRunning) return;
 
-        notifier.NotifySessionEnd(activeSession.TypeName());
+        bool currentWorkPeriod = NativeApi.IsWorkPeriod();
+        int currentRemaining = NativeApi.GetRemainingSeconds();
 
-        if (activeSession.Type == SessionType.Focus)
+        // break transition
+        if (wasWorkPeriod && !currentWorkPeriod)
         {
+            // event trigger to transition to break
+            notifier.NotifySessionEnd("Focus");
             completedPomodoros++;
 
             if (currentProfile != null)
@@ -73,18 +78,22 @@ public class SessionManager
                 Profile.SaveAllProfiles();
             }
 
+            // long break check
             if (completedPomodoros >= settings.PomodorosBeforeLongBreak)
             {
                 completedPomodoros = 0;
-                if (settings.AutoStartNext) StartLongBreak();
-                return;
             }
-
-            if (settings.AutoStartNext) StartShortBreak();
         }
-        else
+        // work transition
+        else if (!wasWorkPeriod && currentWorkPeriod)
         {
-            if (settings.AutoStartNext) StartFocus();
+            // event trigger to transition to work
+            notifier.NotifySessionEnd("Break");
         }
+
+        wasWorkPeriod = currentWorkPeriod;
+        lastRemainingSeconds = currentRemaining;
     }
+    //expose pomodoro count
+    public int CompletedPomodoros => completedPomodoros;
 }

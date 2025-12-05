@@ -2,12 +2,12 @@
   {
     "Username": "Draogo",
     "Settings": {
-      "FocusMinutes": 25,
+      "FocusMinutes": 10,
       "ShortBreakMinutes": 5,
       "LongBreakMinutes": 15,
       "PomodorosBeforeLongBreak": 4,
       "AutoStartNext": true
     },
-    "TotalPomodorosCompleted": 0
+    "TotalPomodorosCompleted": 1
   }
 ]

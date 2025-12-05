@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1706.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PomoDojoFrontend", "PomoDojoFrontend\PomoDojoFrontend.csproj", "{5DB456A2-E634-4C4F-8BFD-A7DAF763CF14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PomoDojo", "PomoDojo\PomoDojo.csproj", "{5DB456A2-E634-4C4F-8BFD-A7DAF763CF14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
