@@ -4,6 +4,9 @@ experimental = true
 dotnet = "8"
 
 [hooks]
-postinstall = ["dotnet publish PomoDojo.csproj  -r linux-x64  --self-contained true  -o ./executables/linux-x64",
-               "dotnet publish PomoDojo.csproj  -r win-x64  --self-contained true  -o ./executables/win-x64",
-               "dotnet publish PomoDojo.csproj  -r osx-x64  --self-contained true  -o ./executables/osx-x64"]
+postinstall = [
+  "dotnet publish PomoDojo.csproj  -r linux-x64  --self-contained true  -o ./executables/linux-x64",
+  "dotnet publish PomoDojo.csproj  -r win-x64  --self-contained true  -o ./executables/win-x64",
+  "dotnet publish PomoDojo.csproj  -r osx-x64  --self-contained true  -o ./executables/osx-x64",
+  "tail -n 2 README.md",
+]
