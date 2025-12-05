@@ -1,23 +1,59 @@
-﻿using System;
+using System;
 
 public class UIController
 {
     private readonly SessionManager manager = new();
+    private Profile? currentProfile;
 
     public void Run()
     {
-        bool exit = false;
+        Console.Clear();
+        Console.WriteLine("=== POMO DOJO ===\n");
 
+        while (currentProfile == null)
+        {
+            Console.WriteLine("[1] Login");
+            Console.WriteLine("[2] Create New Profile");
+            Console.Write("Choose: ");
+            string? choice = Console.ReadLine()?.Trim();
+
+            if (choice == "1")
+            {
+                Console.Write("Enter username: ");
+                string username = Console.ReadLine()?.Trim() ?? "";
+                currentProfile = Profile.LoadProfile(username);
+
+                if (currentProfile != null)
+                {
+                    Console.WriteLine($"Welcome back, {currentProfile.Username}!");
+                    manager.LoadSettingsFromProfile(currentProfile);
+                }
+                else
+                {
+                    Console.WriteLine("Profile not found. Try again or create a new profile.\n");
+                }
+            }
+            else if (choice == "2")
+            {
+                currentProfile = Profile.SetupProfile();
+                Console.WriteLine($"Profile created! Welcome, {currentProfile.Username}!");
+                manager.LoadSettingsFromProfile(currentProfile);
+            }
+        }
+
+        manager.SetCurrentProfile(currentProfile);
+
+        bool exit = false;
         while (!exit)
         {
             manager.UpdateLogic();
             DisplaySessionUI();
             ShowMenu();
 
-            string input = Console.ReadLine()?.Trim();
+            string? input = Console.ReadLine()?.Trim();
 
             if (input == "9") exit = true;
-            else HandleChoice(input);
+            else HandleChoice(input ?? "");
         }
     }
 
@@ -119,17 +155,18 @@ public class UIController
             s.PomodorosBeforeLongBreak);
 
         Console.Write($"Auto-Start Next ({(s.AutoStartNext ? "Y" : "N")}) [Y/N, Enter = keep]: ");
-        string autoInput = Console.ReadLine()?.Trim().ToUpper();
+        string? autoInput = Console.ReadLine()?.Trim().ToUpper();
         if (autoInput == "Y") s.AutoStartNext = true;
         else if (autoInput == "N") s.AutoStartNext = false;
 
-        Console.WriteLine("Settings updated.");
+        Profile.SaveProfileSettings(currentProfile, s);
+        Console.WriteLine("Settings updated and saved.");
     }
 
     private int ReadIntWithDefault(string prompt, int currentValue)
     {
         Console.Write(prompt);
-        string input = Console.ReadLine()?.Trim();
+        string? input = Console.ReadLine()?.Trim();
 
         if (string.IsNullOrEmpty(input))
             return currentValue;

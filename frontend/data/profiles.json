@@ -1,0 +1,13 @@
+[
+  {
+    "Username": "Draogo",
+    "Settings": {
+      "FocusMinutes": 25,
+      "ShortBreakMinutes": 5,
+      "LongBreakMinutes": 15,
+      "PomodorosBeforeLongBreak": 4,
+      "AutoStartNext": true
+    },
+    "TotalPomodorosCompleted": 0
+  }
+]

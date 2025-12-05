@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 
 public class SessionManager
 {
-    private readonly UserSettings settings = new();
+    private UserSettings settings = new();
     private readonly NotificationService notifier = new();
     private readonly TimerEngine timer = new();
 
-    private Session activeSession;
+    private Session? activeSession;
+    private Profile? currentProfile;
     private int completedPomodoros = 0;
 
     public SessionManager()
@@ -14,8 +15,26 @@ public class SessionManager
         timer.Start();
     }
 
-    public Session ActiveSession => activeSession;
+    public Session? ActiveSession => activeSession;
     public UserSettings Settings => settings;
+
+    public void SetCurrentProfile(Profile profile)
+    {
+        currentProfile = profile;
+    }
+
+    public void LoadSettingsFromProfile(Profile profile)
+    {
+        if (profile?.Settings == null) return;
+        settings = new UserSettings
+        {
+            FocusMinutes = profile.Settings.FocusMinutes,
+            ShortBreakMinutes = profile.Settings.ShortBreakMinutes,
+            LongBreakMinutes = profile.Settings.LongBreakMinutes,
+            PomodorosBeforeLongBreak = profile.Settings.PomodorosBeforeLongBreak,
+            AutoStartNext = profile.Settings.AutoStartNext
+        };
+    }
 
     private void StartSession(SessionType type, int minutes)
     {
@@ -47,6 +66,12 @@ public class SessionManager
         if (activeSession.Type == SessionType.Focus)
         {
             completedPomodoros++;
+
+            if (currentProfile != null)
+            {
+                currentProfile.IncrementPomodoros();
+                Profile.SaveAllProfiles();
+            }
 
             if (completedPomodoros >= settings.PomodorosBeforeLongBreak)
             {

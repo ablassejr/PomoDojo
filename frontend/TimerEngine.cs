@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 public class TimerEngine
 {
-    private CancellationTokenSource cts;
-    private Session activeSession;
+    private CancellationTokenSource? cts;
+    private Session? activeSession;
 
     public void SetSession(Session session)
     {
