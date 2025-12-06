@@ -1,9 +1,16 @@
 [settings]
 experimental = true
+asdf = true
+vfox = false
 [tools]
 dotnet = "8"
+rust = "latest"
+cargo = "latest"
+cmake = "latest"
+cargo-binstall = "latest"
 
 [hooks]
+
 postinstall = [
   "dotnet publish PomoDojo.csproj  -r linux-x64  --self-contained true  -o ./executables/linux-x64",
   "dotnet publish PomoDojo.csproj  -r win-x64  --self-contained true  -o ./executables/win-x64",
